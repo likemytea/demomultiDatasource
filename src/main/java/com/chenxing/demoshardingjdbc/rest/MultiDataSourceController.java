@@ -11,14 +11,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
+import com.chenxing.common.redis.RedisService;
+import com.chenxing.demoshardingjdbc.entity.Test01;
 import com.chenxing.demoshardingjdbc.service.Test01s;
 
 /**
  * @author liuxing
  */
 @RestController
-public class HiController {
+public class MultiDataSourceController {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	@Autowired
+	private RedisService redisService;
 
 	@Autowired
 	Test01s t;
@@ -35,5 +40,18 @@ public class HiController {
 
 	}
 
+	@RequestMapping("/saveToRedis")
+	public String saveToRedis() { // 这里用于测试，key值可以自定义实现
+		Test01 t = new Test01();
+		t.setId("safsd");
+		t.setName("安吉lie");
+		redisService.set("123456", t);
+		return "SUCCESS";
+	}
 
+	@RequestMapping("/getFromRedis")
+	public String getFromRedis() { // 这里用于测试，key值可以自定义实现
+		// JSONObject jsonObject = (JSONObject) redisService.get("123456");
+		return JSON.toJSONString(redisService.get("123456"));
+	}
 }
